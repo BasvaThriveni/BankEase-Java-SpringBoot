@@ -29,27 +29,28 @@ A Java and Spring Boot banking application that provides REST APIs and a simple 
 
 ## Project Structure
 
+```text
 BankEase/
-|-- src/
-|   |-- main/
-|       |-- java/
-|       |   |-- com/bankease/
-|       |       |-- controller/
-|       |       |-- exception/
-|       |       |-- model/
-|       |       |-- repository/
-|       |       |-- service/
-|       |       |-- BankEaseApplication.java
-|       |
-|       |-- resources/
-|           |-- static/
-|           |   |-- index.html
-|           |-- application.properties
-|           |-- schema.sql
-|
-|-- pom.xml
-|-- README.md
-|-- test-api.sh
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/bankease/
+│       │       ├── controller/
+│       │       ├── exception/
+│       │       ├── model/
+│       │       ├── repository/
+│       │       ├── service/
+│       │       └── BankEaseApplication.java
+│       │
+│       └── resources/
+│           ├── static/
+│           │   └── index.html
+│           ├── application.properties
+│           └── schema.sql
+│
+├── pom.xml
+├── README.md
+└── test-api.sh
 
 ## Requirements
 
