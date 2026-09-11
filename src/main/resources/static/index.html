@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BankEase - Banking System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px #ccc;
+        }
+
+        input, select, button {
+            padding: 9px;
+            margin: 5px;
+        }
+
+        input, select {
+            width: 200px;
+        }
+
+        button {
+            cursor: pointer;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        #result {
+            background: #eee;
+            padding: 10px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>BankEase</h1>
+    <p style="text-align:center;">Banking Transaction Management System</p>
+
+    <!-- CREATE ACCOUNT -->
+    <div class="card">
+        <h2>Create Account</h2>
+
+        <input type="text" id="name" placeholder="Name">
+        <input type="email" id="email" placeholder="Email">
+        <input type="text" id="phone" placeholder="Phone">
+
+        <select id="accountType">
+            <option value="SAVINGS">SAVINGS</option>
+            <option value="CURRENT">CURRENT</option>
+        </select>
+
+        <input type="number" id="initialDeposit" placeholder="Initial Deposit">
+
+        <br>
+
+        <button onclick="createAccount()">Create Account</button>
+    </div>
+
+
+    <!-- DEPOSIT / WITHDRAW -->
+    <div class="card">
+        <h2>Deposit / Withdraw</h2>
+
+        <input type="number" id="operationAccountId" placeholder="Account ID">
+        <input type="number" id="operationAmount" placeholder="Amount">
+
+        <br>
+
+        <button onclick="deposit()">Deposit</button>
+        <button onclick="withdraw()">Withdraw</button>
+    </div>
+
+
+    <!-- TRANSFER -->
+    <div class="card">
+        <h2>Transfer Money</h2>
+
+        <input type="number" id="fromAccount" placeholder="From Account">
+        <input type="number" id="toAccount" placeholder="To Account">
+        <input type="number" id="transferAmount" placeholder="Amount">
+
+        <br>
+
+        <button onclick="transfer()">Transfer</button>
+    </div>
+
+
+    <!-- TRANSACTION HISTORY -->
+    <div class="card">
+        <h2>Transaction History</h2>
+
+        <input type="number" id="historyAccountId" placeholder="Account ID">
+
+        <button onclick="getHistory()">View History</button>
+
+        <div id="history"></div>
+    </div>
+
+
+    <!-- RESULT -->
+    <div class="card">
+        <h2>Result</h2>
+        <div id="result">Results will appear here.</div>
+    </div>
+
+</div>
+
+
+<script>
+
+const BASE_URL = "http://localhost:8081/api";
+
+
+// CREATE ACCOUNT
+function createAccount() {
+
+    const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        accountType: document.getElementById("accountType").value,
+        initialDeposit: Number(document.getElementById("initialDeposit").value)
+    };
+
+    fetch(BASE_URL + "/accounts", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+        document.getElementById("result").textContent =
+            "Error: " + error;
+    });
+}
+
+
+// DEPOSIT
+function deposit() {
+
+    const id = document.getElementById("operationAccountId").value;
+    const amount = document.getElementById("operationAmount").value;
+
+    fetch(BASE_URL + "/accounts/" + id + "/deposit?amount=" + amount, {
+        method: "POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+        document.getElementById("result").textContent =
+            "Error: " + error;
+    });
+}
+
+
+// WITHDRAW
+function withdraw() {
+
+    const id = document.getElementById("operationAccountId").value;
+    const amount = document.getElementById("operationAmount").value;
+
+    fetch(BASE_URL + "/accounts/" + id + "/withdraw?amount=" + amount, {
+        method: "POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+        document.getElementById("result").textContent =
+            "Error: " + error;
+    });
+}
+
+
+// TRANSFER
+function transfer() {
+
+    const data = {
+        fromAccount: Number(document.getElementById("fromAccount").value),
+        toAccount: Number(document.getElementById("toAccount").value),
+        amount: Number(document.getElementById("transferAmount").value)
+    };
+
+    fetch(BASE_URL + "/transactions/transfer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+        document.getElementById("result").textContent =
+            "Error: " + error;
+    });
+}
+
+
+// TRANSACTION HISTORY
+function getHistory() {
+
+    const id = document.getElementById("historyAccountId").value;
+
+    fetch(BASE_URL + "/accounts/" + id + "/transactions")
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.length === 0) {
+            document.getElementById("history").innerHTML =
+                "<p>No transactions found.</p>";
+            return;
+        }
+
+        let table = `
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+        `;
+
+        data.forEach(transaction => {
+            table += `
+                <tr>
+                    <td>${transaction.transactionId}</td>
+                    <td>${transaction.transactionType}</td>
+                    <td>₹${transaction.amount}</td>
+                    <td>${transaction.status}</td>
+                    <td>${transaction.transactionDate}</td>
+                </tr>
+            `;
+        });
+
+        table += "</table>";
+
+        document.getElementById("history").innerHTML = table;
+    })
+    .catch(error => {
+        document.getElementById("history").textContent =
+            "Error: " + error;
+    });
+}
+
+</script>
+
+</body>
+</html>
